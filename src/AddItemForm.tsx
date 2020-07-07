@@ -1,7 +1,10 @@
 import React, {useState} from "react";
+import {IconButton, TextField} from "@material-ui/core";
+import {Add} from "@material-ui/icons";
 
 type PropsType = {
     addItem: (title: string) => void
+    str?: string
 }
 
 export const AddItemForm = (props: PropsType) => {
@@ -17,7 +20,7 @@ export const AddItemForm = (props: PropsType) => {
             props.addItem(title)
             setTitle('')
         } else {
-            setError('Fill In To Add')
+            setError("Type something to add")
         }
     }
 
@@ -28,7 +31,7 @@ export const AddItemForm = (props: PropsType) => {
                 props.addItem(title)
                 setTitle('')
             } else {
-                setError('Fill In To Add')
+                setError("Type something to add")
             }
         }
     }
@@ -36,10 +39,11 @@ export const AddItemForm = (props: PropsType) => {
     // Component
     return (
         <div>
-            <input onKeyPress={onKeyPressHandler} onChange={getTaskText} value={title}
-                   className={error ? 'error' : ''}/>
-            <button onClick={addTitle}>+</button>
-            {error && <div className='error-message'>{error}</div>}
+            <TextField size='small' variant="outlined" label={!!error ? error: props.str} onKeyPress={onKeyPressHandler}
+                       onChange={getTaskText} value={title} error={!!error} style={{margin: '10px 0'}}/>
+            <IconButton onClick={addTitle}>
+                <Add />
+            </IconButton>
         </div>
     )
 }
