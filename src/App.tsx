@@ -153,7 +153,7 @@ function App() {
                         <Menu/>
                     </IconButton>
                     <Typography variant="h6">
-                        News
+                        To Do App
                     </Typography>
                     <Button color="inherit">Login</Button>
                 </Toolbar>

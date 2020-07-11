@@ -70,7 +70,7 @@ export function Todolist(props: PropsType) {
                     }
 
                     return (
-                        <div key={t.id} className={t.isDone ? 'is-done' : ''}>
+                        <div key={t.id} style={t.isDone ? {opacity: '0.5'} : undefined}>
                             <Checkbox checked={t.isDone} onChange={onChangeHandler} color="default"/>
                             <EditableSpan title={t.title} renameTaskTitle={renameTaskTitle}/>
                             <IconButton onClick={deleteTask}>
