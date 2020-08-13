@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {Button, TextField} from "@material-ui/core";
 
 type PropsType = {
     addItem: (inputValue: string) => void
@@ -31,13 +32,8 @@ const AddItemForm = (props: PropsType) => {
 
     return (
         <div>
-            <input value={inputValue}
-                   onChange={getInputValue}
-                   onKeyPress={onKeyPressHandler}
-                   className={error ? "error" : ""}
-            />
-            <button onClick={addItem}>+</button>
-            {error && <div className="error-message">{error}</div>}
+            <TextField error={!!error} helperText={error} label="Enter Title" variant="outlined" size={'small'} value={inputValue} onChange={getInputValue} onKeyPress={onKeyPressHandler}/>
+            <Button variant={"outlined"} color={"default"} size={"small"} onClick={addItem}>ADD</Button>
         </div>
     )
 }

@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {ListItemText, TextField} from "@material-ui/core";
 
 type PropsType = {
     title: string
@@ -25,7 +26,7 @@ const EditableSpan = (props: PropsType) => {
     }
 
     return (
-        editMode ? <input onKeyPress={keyPressEnter} onChange={getInputValue} onBlur={setNewTitle} value={inputValue} autoFocus/> : <span onDoubleClick={() => setEditMode(true)}>{props.title}</span>
+        editMode ? <TextField size={'small'} onKeyPress={keyPressEnter} onChange={getInputValue} onBlur={setNewTitle} value={inputValue} autoFocus /> : <ListItemText primary={props.title} onDoubleClick={() => setEditMode(true)}/>
     )
 }
 

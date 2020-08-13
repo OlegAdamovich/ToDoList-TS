@@ -3,6 +3,12 @@ import './App.css';
 import {Todolist} from './Todolist';
 import {v1} from 'uuid';
 import AddItemForm from "./AddItemForm";
+import {AppBar, Container, Grid, Paper} from '@material-ui/core';
+import {Toolbar} from '@material-ui/core';
+import {Typography} from '@material-ui/core';
+import {Button} from '@material-ui/core';
+import {IconButton} from '@material-ui/core';
+import {Menu} from '@material-ui/icons';
 
 export type FilterValuesType = "all" | "active" | "completed";
 
@@ -130,16 +136,43 @@ function App() {
         }
 
         return (
-            <Todolist key={todolist.id} id={todolist.id} title={todolist.title} tasks={tasksForTodolist}
-                      removeTask={removeTask} changeFilter={changeFilter} addTask={addTask}
-                      changeTaskStatus={changeStatus} filter={todolist.filter} deleteTodolist={deleteTodolist} changeTodolistTitle={changeTodolistTitle} changeTaskTitle={changeTaskTitle}/>
+            <Grid key={todolist.id} item>
+                <Paper elevation={5} variant={"elevation"} style={{padding: '20px'}}>
+                    <Todolist id={todolist.id} title={todolist.title} tasks={tasksForTodolist}
+                              removeTask={removeTask} changeFilter={changeFilter} addTask={addTask}
+                              changeTaskStatus={changeStatus} filter={todolist.filter} deleteTodolist={deleteTodolist}
+                              changeTodolistTitle={changeTodolistTitle} changeTaskTitle={changeTaskTitle}/>
+                </Paper>
+            </Grid>
         )
     })
 
     return (
-        <div className="App">
-            <AddItemForm addItem={addTodolist}/>
-            {todolistElements}
+        <div>
+            <AppBar position="static">
+                <Toolbar>
+                    <IconButton edge="start" color="inherit" aria-label="menu">
+                        <Menu/>
+                    </IconButton>
+                    <Typography variant="h6">
+                        News
+                    </Typography>
+                    <Button color="inherit">Login</Button>
+                </Toolbar>
+            </AppBar>
+            <Container>
+                <Grid style={{margin: '20px 0'}}
+                    container
+                    // direction="row"
+                    // justify="center"
+                    // alignItems="center"
+                >
+                    <AddItemForm addItem={addTodolist}/>
+                </Grid>
+                <Grid container spacing={5}>
+                    {todolistElements}
+                </Grid>
+            </Container>
         </div>
     );
 }
