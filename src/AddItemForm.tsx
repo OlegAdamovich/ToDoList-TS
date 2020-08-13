@@ -1,49 +1,45 @@
 import React, {useState} from "react";
-import {IconButton, TextField} from "@material-ui/core";
-import {Add} from "@material-ui/icons";
 
 type PropsType = {
-    addItem: (title: string) => void
-    str?: string
-}
+    addItem: (inputValue: string) => void
+};
 
-export const AddItemForm = (props: PropsType) => {
-    // Local State
-    let [error, setError] = useState<string | null>(null)
-    let [title, setTitle] = useState<string>('')
+const AddItemForm = (props: PropsType) => {
+    let [inputValue, setInputValue] = useState<string>('');
+    let [error, setError] = useState<string | null>(null);
 
-    // Callbacks
-    const getTaskText = (e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.currentTarget.value)
+    function getInputValue(event: React.ChangeEvent<HTMLInputElement>) {
+        setError(null);
+        setInputValue(event.currentTarget.value);
+    }
 
-    const addTitle = () => {
-        if (title.trim() !== '') {
-            props.addItem(title)
-            setTitle('')
+    function onKeyPressHandler(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (event.key === 'Enter') {
+            addItem();
+        }
+    }
+
+    function addItem() {
+        if (inputValue.trim() !== '') {
+            props.addItem(inputValue);
+            setInputValue('');
         } else {
-            setError("Type something to add")
+            setError("Title is required");
+            setInputValue('');
         }
     }
 
-    const onKeyPressHandler = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        setError(null)
-        if (e.charCode === 13) {
-            if (title.trim() !== '') {
-                props.addItem(title)
-                setTitle('')
-            } else {
-                setError("Type something to add")
-            }
-        }
-    }
-
-    // Component
     return (
         <div>
-            <TextField size='small' variant="outlined" label={!!error ? error: props.str} onKeyPress={onKeyPressHandler}
-                       onChange={getTaskText} value={title} error={!!error} style={{margin: '10px 0'}}/>
-            <IconButton onClick={addTitle}>
-                <Add />
-            </IconButton>
+            <input value={inputValue}
+                   onChange={getInputValue}
+                   onKeyPress={onKeyPressHandler}
+                   className={error ? "error" : ""}
+            />
+            <button onClick={addItem}>+</button>
+            {error && <div className="error-message">{error}</div>}
         </div>
     )
 }
+
+export default AddItemForm

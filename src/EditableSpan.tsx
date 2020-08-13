@@ -1,36 +1,32 @@
-import React, {ChangeEvent, useState} from "react";
-import {TextField} from "@material-ui/core";
+import React, {useState} from "react";
 
 type PropsType = {
     title: string
-    renameTaskTitle: (newTitle: string) => void
-}
+    setNewTitle: (newTitle: string) => void
+};
 
-export const EditableSpan = (props: PropsType) => {
-    // Local State
-    let [editMode, setEditMode] = useState(false)
-    let [title, setTitle] = useState(props.title)
+const EditableSpan = (props: PropsType) => {
+    let [editMode, setEditMode] = useState<boolean>(false);
+    let [inputValue, setInputValue] = useState<string>(props.title);
 
-    // Callbacks
-    const onEditMode = () => setEditMode(true)
-    const offEditMode = () => {
-        setEditMode(false)
-        props.renameTaskTitle(title)
+    function getInputValue(event: React.ChangeEvent<HTMLInputElement>) {
+        setInputValue(event.currentTarget.value);
     }
 
-    const onPressEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    function setNewTitle() {
+        props.setNewTitle(inputValue);
+        setEditMode(false)
+    }
+
+    function keyPressEnter(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key === 'Enter') {
-            offEditMode()
+            setNewTitle();
         }
     }
 
-    const getTitle = (e: ChangeEvent<HTMLInputElement>) => setTitle(e.currentTarget.value)
-
-    // Component
     return (
-        editMode ?
-            <TextField size='small' variant="outlined" label='Type Here' onKeyPress={onPressEnter} onChange={getTitle}
-                       onBlur={offEditMode} value={title} autoFocus/> :
-            <span onDoubleClick={onEditMode}>{props.title}</span>
+        editMode ? <input onKeyPress={keyPressEnter} onChange={getInputValue} onBlur={setNewTitle} value={inputValue} autoFocus/> : <span onDoubleClick={() => setEditMode(true)}>{props.title}</span>
     )
 }
+
+export default EditableSpan
