@@ -1,0 +1,22 @@
+.buttons-group {
+    margin: 15px 0;
+}
+
+.todolist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.todolist-header span {
+    font-size: 20px;
+}
+
+.task-element {
+    display: flex;
+    justify-content: space-between;
+}
+
+.add-item-form {
+    margin-bottom: 10px;
+}

@@ -31,7 +31,7 @@ const AddItemForm = (props: PropsType) => {
     }
 
     return (
-        <div>
+        <div className='add-item-form'>
             <TextField error={!!error} helperText={error} label="Enter Title" variant="outlined" size={'small'} value={inputValue} onChange={getInputValue} onKeyPress={onKeyPressHandler}/>
             <Button variant={"outlined"} color={"default"} size={"small"} onClick={addItem}>ADD</Button>
         </div>
