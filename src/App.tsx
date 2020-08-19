@@ -33,6 +33,7 @@ function App() {
     let todolistId1 = v1();
     let todolistId2 = v1();
 
+    // Local State
     let [todolists, setTodolists] = useState<TodolistType[]>([
         {id: todolistId1, title: 'Names', filter: "all"},
         {id: todolistId2, title: 'Cars', filter: "all"}
@@ -49,7 +50,7 @@ function App() {
             {id: v1(), title: 'Lexus', isDone: false},
         ]
     })
-
+    // Tasks Callbacks
     function changeTaskTitle(todolistId: string, taskId: string, changedTaskTitle: string) {
         let todolistTasks = tasks[todolistId];
         let newTasks = todolistTasks.map(task => {
@@ -60,23 +61,6 @@ function App() {
             }
         })
         setTasks({...tasks, [todolistId]: newTasks});
-    }
-
-    function changeTodolistTitle(todolistId: string, changedTodolistTitle: string) {
-        let newTodolists = todolists.map(todolist => {
-            if (todolist.id === todolistId) {
-                return {...todolist, title: changedTodolistTitle};
-            } else {
-                return todolist;
-            }
-        })
-        setTodolists(newTodolists);
-    }
-
-    function deleteTodolist(todolistId: string) {
-        let newTodolists = todolists.filter(todolist => todolist.id !== todolistId);
-        setTodolists(newTodolists);
-        delete tasks[todolistId];
     }
 
     function removeTask(id: string, todolistId: string) {
@@ -105,6 +89,24 @@ function App() {
         setTasks({...tasks, [todolistId]: newTasks});
     }
 
+    // Todolist Callbacks
+    function changeTodolistTitle(todolistId: string, changedTodolistTitle: string) {
+        let newTodolists = todolists.map(todolist => {
+            if (todolist.id === todolistId) {
+                return {...todolist, title: changedTodolistTitle};
+            } else {
+                return todolist;
+            }
+        })
+        setTodolists(newTodolists);
+    }
+
+    function deleteTodolist(todolistId: string) {
+        let newTodolists = todolists.filter(todolist => todolist.id !== todolistId);
+        setTodolists(newTodolists);
+        delete tasks[todolistId];
+    }
+
     function changeFilter(todolistId: string, value: FilterValuesType) {
         let newTodolists = todolists.map(todolist => {
             if (todolist.id === todolistId) {
@@ -124,7 +126,7 @@ function App() {
         setTasks({...tasks, [newTodolistId]: []})
     }
 
-
+    // Todolists
     let todolistElements = todolists.map(todolist => {
 
         let tasksForTodolist = tasks[todolist.id];
@@ -147,6 +149,7 @@ function App() {
         )
     })
 
+    // JSX
     return (
         <div>
             <AppBar position="static">
