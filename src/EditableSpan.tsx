@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {TextField} from "@material-ui/core";
 
 type PropsType = {
@@ -6,30 +6,34 @@ type PropsType = {
     setNewTitle: (newTitle: string) => void
 };
 
-const EditableSpan = (props: PropsType) => {
+export const EditableSpan = React.memo((props: PropsType) => {
+    console.log('EditableSpan called')
     let [editMode, setEditMode] = useState<boolean>(false);
     let [inputValue, setInputValue] = useState<string>(props.title);
 
-    function getInputValue(event: React.ChangeEvent<HTMLInputElement>) {
+    const getInputValue = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.currentTarget.value);
-    }
+    }, [])
 
-    function setNewTitle() {
+    const setNewTitle = useCallback(() => {
         props.setNewTitle(inputValue);
         setEditMode(false)
-    }
+    }, [])
 
-    function keyPressEnter(e: React.KeyboardEvent<HTMLInputElement>) {
+    const keyPressEnter = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             setNewTitle();
         }
-    }
+    }, [])
+
+    const setEditModeCallback = useCallback(() => {
+        setEditMode(true);
+    }, []);
 
     return (
         editMode ? <TextField size={'small'} onKeyPress={keyPressEnter} onChange={getInputValue} onBlur={setNewTitle}
                               value={inputValue} autoFocus/> :
-            <span onDoubleClick={() => setEditMode(true)}>{props.title}</span>
+            <span onDoubleClick={setEditModeCallback}>{inputValue}</span>
     )
-}
+})
 
-export default EditableSpan

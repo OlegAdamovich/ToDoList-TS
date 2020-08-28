@@ -20,3 +20,7 @@
 .add-item-form {
     margin-bottom: 10px;
 }
+
+.isDone {
+    opacity: 0.5;
+}

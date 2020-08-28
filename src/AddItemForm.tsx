@@ -5,22 +5,24 @@ type PropsType = {
     addItem: (inputValue: string) => void
 };
 
-const AddItemForm = (props: PropsType) => {
+// JSX
+export const AddItemForm = React.memo((props: PropsType) => {
+    console.log('AddItemForm is called')
     let [inputValue, setInputValue] = useState<string>('');
     let [error, setError] = useState<string | null>(null);
 
-    function getInputValue(event: React.ChangeEvent<HTMLInputElement>) {
+    const getInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
         setError(null);
         setInputValue(event.currentTarget.value);
     }
 
-    function onKeyPressHandler(event: React.KeyboardEvent<HTMLInputElement>) {
+    const onKeyPressHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             addItem();
         }
     }
 
-    function addItem() {
+    const addItem = () => {
         if (inputValue.trim() !== '') {
             props.addItem(inputValue);
             setInputValue('');
@@ -32,10 +34,9 @@ const AddItemForm = (props: PropsType) => {
 
     return (
         <div className='add-item-form'>
-            <TextField error={!!error} helperText={error} label="Enter Title" variant="outlined" size={'small'} value={inputValue} onChange={getInputValue} onKeyPress={onKeyPressHandler}/>
+            <TextField error={!!error} helperText={error} label="Enter Title" variant="outlined" size={'small'}
+                       value={inputValue} onChange={getInputValue} onKeyPress={onKeyPressHandler}/>
             <Button variant={"outlined"} color={"default"} size={"small"} onClick={addItem}>ADD</Button>
         </div>
     )
-}
-
-export default AddItemForm
+})

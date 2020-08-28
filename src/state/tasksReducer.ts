@@ -1,6 +1,6 @@
-import {TasksStateType} from "../AppWithReducers";
+import {TasksStateType} from "../AppWithRedux";
 import {v1} from "uuid";
-import {addTodolistActionType, deleteTodolistActionType, todolistId1, todolistId2} from "./todolistsReducer";
+import {addTodolistActionType, deleteTodolistActionType} from "./todolistsReducer";
 
 // Action Types
 type deleteTaskActionType = {
@@ -65,15 +65,15 @@ export const changeTaskTitleAC = (todolistId: string, taskId: string, title: str
 })
 
 const initialState = {
-    [todolistId1]: [
-        {id: '1', title: 'Pizza', isDone: false},
-        {id: '2', title: 'Cola', isDone: false}
-    ],
-    [todolistId2]: [
-        {id: '1', title: 'Take Shower', isDone: false},
-        {id: '2', title: 'Brush Teeth', isDone: false},
-        {id: '3', title: 'Drink Coffee', isDone: false}
-    ]
+    // [todolistId1]: [
+    //     {id: '1', title: 'Pizza', isDone: false},
+    //     {id: '2', title: 'Cola', isDone: false}
+    // ],
+    // [todolistId2]: [
+    //     {id: '1', title: 'Take Shower', isDone: false},
+    //     {id: '2', title: 'Brush Teeth', isDone: false},
+    //     {id: '3', title: 'Drink Coffee', isDone: false}
+    // ]
 }
 
 // Reducer
