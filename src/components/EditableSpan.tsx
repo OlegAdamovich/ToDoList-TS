@@ -8,32 +8,33 @@ type PropsType = {
 
 export const EditableSpan = React.memo((props: PropsType) => {
     console.log('EditableSpan called')
+
     let [editMode, setEditMode] = useState<boolean>(false);
     let [inputValue, setInputValue] = useState<string>(props.title);
 
-    const getInputValue = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const getInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.currentTarget.value);
-    }, [])
+    }
 
-    const setNewTitle = useCallback(() => {
+    const setNewTitle = () => {
         props.setNewTitle(inputValue);
         setEditMode(false)
-    }, [])
+    }
 
-    const keyPressEnter = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    const keyPressEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             setNewTitle();
         }
-    }, [])
+    }
 
-    const setEditModeCallback = useCallback(() => {
+    const setEditModeCallback = () => {
         setEditMode(true);
-    }, []);
+    }
 
     return (
         editMode ? <TextField size={'small'} onKeyPress={keyPressEnter} onChange={getInputValue} onBlur={setNewTitle}
                               value={inputValue} autoFocus/> :
-            <span onDoubleClick={setEditModeCallback}>{inputValue}</span>
+            <span onDoubleClick={setEditModeCallback}>{props.title}</span>
     )
 })
 
