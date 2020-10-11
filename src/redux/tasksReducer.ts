@@ -1,8 +1,9 @@
 import {addTodolistAC, deleteTodolistAC, setTodolistsAC} from './todolistsReducer';
-import {TaskStatuses, TaskType} from '../entities';
+import {RequestStatusCodes, TaskStatuses, TaskType} from '../entities';
 import {Dispatch} from 'redux';
 import {tasksAPI, UpdateTaskModelType} from '../dal/tasksAPI';
 import {AppRootStateType} from './store';
+import {setErrorAC, setStatusAC} from './appReducer';
 
 type ActionsType =
     ReturnType<typeof deleteTaskAC>
@@ -13,6 +14,8 @@ type ActionsType =
     | ReturnType<typeof deleteTodolistAC>
     | ReturnType<typeof setTodolistsAC>
     | ReturnType<typeof setTasksAC>
+    | ReturnType<typeof setStatusAC>
+    | ReturnType<typeof setErrorAC>
 
 export type TasksStateType = {
     [key: string]: Array<TaskType>
@@ -31,8 +34,12 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
                 [action.todolistId]: state[action.todolistId].map(task => task.id === action.taskId ? action.changedTask : task)
             }
         case 'CHANGE-TASK-TITLE':
-            return {...state,
-                [action.todolistId]: state[action.todolistId].map(task => task.id === action.taskId ? {...task, title: action.title} : task)
+            return {
+                ...state,
+                [action.todolistId]: state[action.todolistId].map(task => task.id === action.taskId ? {
+                    ...task,
+                    title: action.title
+                } : task)
             }
         case 'ADD-TODOLIST':
             return {...state, [action.newTodolist.id]: []};
@@ -78,23 +85,48 @@ export const setTasksAC = (todolistId: string, tasks: Array<TaskType>) => ({
 } as const);
 
 
-// Thunks
+// Thunk Creators
 export const setTasksTC = (todolistId: string) => {
     return (dispatch: Dispatch<ActionsType>) => {
+        dispatch(setStatusAC('loading'))
         tasksAPI.getTasks(todolistId)
-            .then(response => dispatch(setTasksAC(todolistId, response.data.items)))
+            .then(response => {
+                dispatch(setTasksAC(todolistId, response.data.items))
+                dispatch(setStatusAC('succeeded'))
+            })
     }
 }
 export const deleteTaskTC = (todolistId: string, taskId: string) => {
     return (dispatch: Dispatch<ActionsType>) => {
+        dispatch(setStatusAC('loading'))
         tasksAPI.deleteTask(todolistId, taskId)
-            .then(response => dispatch(deleteTaskAC(todolistId, taskId)))
+            .then(response => {
+                dispatch(deleteTaskAC(todolistId, taskId))
+                dispatch(setStatusAC('succeeded'))
+            })
     }
 }
 export const addTaskTC = (todolistId: string, newTaskTitle: string) => {
     return (dispatch: Dispatch<ActionsType>) => {
-        return tasksAPI.createTask(todolistId, newTaskTitle)
-            .then(response => dispatch(addTaskAC(response.data.data.item)))
+        dispatch(setStatusAC('loading'))
+        tasksAPI.createTask(todolistId, newTaskTitle)
+            .then(response => {
+                if (response.data.resultCode === RequestStatusCodes.success) {
+                    dispatch(addTaskAC(response.data.data.item))
+                    dispatch(setStatusAC('succeeded'))
+                } else {
+                    if (response.data.messages.length) {
+                        dispatch(setErrorAC(response.data.messages[0]))
+                    } else {
+                        dispatch(setErrorAC('Some error occurred'))
+                    }
+                    dispatch(setStatusAC('failed'))
+                }
+            })
+            .catch(error => {
+                dispatch(setErrorAC(error.message))
+                dispatch(setStatusAC('failed'))
+            })
     }
 }
 export const changeTaskStatusTC = (todolistId: string, taskId: string, newStatus: TaskStatuses) => {
@@ -111,10 +143,11 @@ export const changeTaskStatusTC = (todolistId: string, taskId: string, newStatus
                 status: newStatus
             };
 
+            dispatch(setStatusAC('loading'))
             tasksAPI.updateTask(todolistId, taskId, updateTaskModel)
                 .then(response => {
-                    debugger
                     dispatch(changeTaskStatusAC(todolistId, taskId, response.data.data.item))
+                    dispatch(setStatusAC('succeeded'))
                 })
         }
     }

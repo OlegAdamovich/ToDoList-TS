@@ -3,6 +3,7 @@ import {Button, TextField} from "@material-ui/core";
 
 type PropsType = {
     addItem: (inputValue: string) => void
+    disabled?: boolean
 };
 
 // JSX
@@ -34,9 +35,9 @@ export const AddItemForm = React.memo((props: PropsType) => {
 
     return (
         <div className='add-item-form'>
-            <TextField error={!!error} helperText={error} label="Enter Title" variant="outlined" size={'small'}
+            <TextField disabled={props.disabled} error={!!error} helperText={error} label="Enter Title" variant="outlined" size={'small'}
                        value={inputValue} onChange={getInputValue} onKeyPress={onKeyPressHandler}/>
-            <Button variant={"outlined"} color={"default"} size={"small"} onClick={addItem}>ADD</Button>
+            <Button disabled={props.disabled} variant={"outlined"} color={"default"} size={"small"} onClick={addItem}>ADD</Button>
         </div>
     )
 })

@@ -6,6 +6,7 @@ export type TodolistType = {
 }
 export type TodolistWithFilterType = TodolistType & {
     filter: FilterValuesType
+    entityStatus: RequestStatusType
 }
 
 
@@ -37,3 +38,11 @@ export type TaskType = {
 
 
 export type FilterValuesType = 'all' | 'active' | 'completed';
+
+
+export enum RequestStatusCodes {
+    success = 0,
+    error = 1
+}
+
+export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed'

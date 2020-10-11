@@ -4,7 +4,7 @@ import {Delete} from '@material-ui/icons';
 import {Task} from './Task';
 import {AddItemForm} from '../components/AddItemForm';
 import {EditableSpan} from '../components/EditableSpan';
-import {FilterValuesType, TaskStatuses, TaskType} from '../entities';
+import {FilterValuesType, RequestStatusType, TaskStatuses, TaskType} from '../entities';
 import {addTaskTC, deleteTaskTC, setTasksTC} from '../redux/tasksReducer';
 import {useDispatch} from 'react-redux';
 import {changeTodolistTitleTC, deleteTodolistTC} from '../redux/todolistsReducer';
@@ -12,6 +12,7 @@ import {changeTodolistTitleTC, deleteTodolistTC} from '../redux/todolistsReducer
 
 type PropsType = {
     title: string
+    entityStatus: RequestStatusType
     tasks: Array<TaskType>
     changeTodolistFilter: (todolistId: string, value: FilterValuesType) => void
     changeTaskStatus: (todolistId: string, taskId: string, newStatus: TaskStatuses) => void
@@ -84,7 +85,7 @@ export const Todolist = React.memo((props: PropsType) => {
     return <div>
         <div className='todolist-header'>
             <EditableSpan title={props.title} setNewTitle={changeTodolistTitle}/>
-            <IconButton onClick={deleteTodolist}>
+            <IconButton onClick={deleteTodolist} disabled={props.entityStatus === 'loading'}>
                 <Delete/>
             </IconButton>
         </div>
@@ -99,7 +100,7 @@ export const Todolist = React.memo((props: PropsType) => {
                         variant={props.filter === 'completed' ? 'contained' : "outlined"}>Completed</Button>
             </ButtonGroup>
         </div>
-        <AddItemForm addItem={addTaskCallback}/>
+        <AddItemForm addItem={addTaskCallback} disabled={props.entityStatus === 'loading'}/>
 
         <div>{tasksElements}</div>
     </div>

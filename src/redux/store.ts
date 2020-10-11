@@ -2,6 +2,7 @@ import {applyMiddleware, combineReducers, createStore} from 'redux';
 import {todolistsReducer} from "./todolistsReducer";
 import {tasksReducer} from "./tasksReducer";
 import thunkMiddleware from 'redux-thunk';
+import {appReducer} from './appReducer';
 
 
 export type AppRootStateType = ReturnType<typeof rootReducer>
@@ -9,7 +10,8 @@ export type AppRootStateType = ReturnType<typeof rootReducer>
 
 const rootReducer = combineReducers({
     todolists: todolistsReducer,
-    tasks: tasksReducer
+    tasks: tasksReducer,
+    app: appReducer
 })
 
 

@@ -1,12 +1,18 @@
 import React from 'react';
 import './App.css';
-import {AppBar, Button, Container, IconButton, Toolbar, Typography} from '@material-ui/core';
+import {AppBar, Button, Container, IconButton, LinearProgress, Toolbar, Typography} from '@material-ui/core';
 import {Menu} from '@material-ui/icons';
 import {Todolists} from '../features/Todolists';
+import {useSelector} from 'react-redux';
+import {AppRootStateType} from '../redux/store';
+import {ErrorSnackbar} from '../components/ErrorSnackbar';
+import {RequestStatusType} from '../entities';
 
 
 export const App = () => {
     console.log('App call')
+
+    let loadingStatus = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status);
 
     return (
         <div>
@@ -21,9 +27,11 @@ export const App = () => {
                     <Button color="inherit">Login</Button>
                 </Toolbar>
             </AppBar>
+            {loadingStatus === 'loading' && <LinearProgress color="secondary" />}
             <Container>
                 <Todolists/>
             </Container>
+            <ErrorSnackbar/>
         </div>
     );
 }
