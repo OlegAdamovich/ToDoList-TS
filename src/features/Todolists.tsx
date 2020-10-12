@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect} from 'react';
-import {Container, Grid, Paper} from '@material-ui/core';
-import {FilterValuesType, TaskStatuses, TodolistType, TodolistWithFilterType} from '../entities';
+import {Grid, Paper} from '@material-ui/core';
+import {FilterValuesType, TaskStatuses} from '../entities';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppRootStateType} from '../redux/store';
 import {addTodolistTC, changeTodolistFilterAC, setTodolistsTC, TodolistsStateType} from '../redux/todolistsReducer';
-import {changeTaskStatusTC, changeTaskTitleAC, TasksStateType} from '../redux/tasksReducer';
+import {TasksStateType, updateTaskTC} from '../redux/tasksReducer';
 import {Todolist} from './Todolist';
 import {AddItemForm} from '../components/AddItemForm';
 
@@ -27,10 +27,10 @@ export const Todolists = () => {
     }, []);
 
     const changeTaskTitle = useCallback((todolistId: string, taskId: string, changedTaskTitle: string) => {
-        dispatch(changeTaskTitleAC(todolistId, taskId, changedTaskTitle))
+        dispatch(updateTaskTC(todolistId, taskId, {title: changedTaskTitle}))
     }, []);
     const changeTaskStatus = useCallback((todolistId: string, taskId: string, newStatus: TaskStatuses) => {
-        dispatch(changeTaskStatusTC(todolistId, taskId, newStatus))
+        dispatch(updateTaskTC(todolistId, taskId, {status: newStatus}))
     }, []);
 
     let todolistElements = todolists.map(todolist => {

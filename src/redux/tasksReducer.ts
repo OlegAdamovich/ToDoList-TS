@@ -1,5 +1,5 @@
 import {addTodolistAC, deleteTodolistAC, setTodolistsAC} from './todolistsReducer';
-import {RequestStatusCodes, TaskStatuses, TaskType} from '../entities';
+import {PropertyUpdateTaskType, RequestStatusCodes, TaskType} from '../entities';
 import {Dispatch} from 'redux';
 import {tasksAPI, UpdateTaskModelType} from '../dal/tasksAPI';
 import {AppRootStateType} from './store';
@@ -8,8 +8,7 @@ import {setErrorAC, setStatusAC} from './appReducer';
 type ActionsType =
     ReturnType<typeof deleteTaskAC>
     | ReturnType<typeof addTaskAC>
-    | ReturnType<typeof changeTaskStatusAC>
-    | ReturnType<typeof changeTaskTitleAC>
+    | ReturnType<typeof updateTaskAC>
     | ReturnType<typeof addTodolistAC>
     | ReturnType<typeof deleteTodolistAC>
     | ReturnType<typeof setTodolistsAC>
@@ -28,18 +27,10 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
             return {...state, [action.todolistId]: state[action.todolistId].filter(task => task.id !== action.taskId)};
         case 'ADD-TASK':
             return {...state, [action.newTask.todoListId]: [action.newTask, ...state[action.newTask.todoListId]]};
-        case 'CHANGE-TASK-STATUS':
+        case 'UPDATE_TASK':
             return {
                 ...state,
-                [action.todolistId]: state[action.todolistId].map(task => task.id === action.taskId ? action.changedTask : task)
-            }
-        case 'CHANGE-TASK-TITLE':
-            return {
-                ...state,
-                [action.todolistId]: state[action.todolistId].map(task => task.id === action.taskId ? {
-                    ...task,
-                    title: action.title
-                } : task)
+                [action.todolistId]: state[action.todolistId].map(task => task.id === action.taskId ? action.updatedTask : task)
             }
         case 'ADD-TODOLIST':
             return {...state, [action.newTodolist.id]: []};
@@ -66,17 +57,11 @@ export const deleteTaskAC = (todolistId: string, taskId: string) => ({
     taskId
 } as const);
 export const addTaskAC = (newTask: TaskType) => ({type: 'ADD-TASK', newTask} as const);
-export const changeTaskStatusAC = (todolistId: string, taskId: string, changedTask: TaskType) => ({
-    type: 'CHANGE-TASK-STATUS',
+export const updateTaskAC = (todolistId: string, taskId: string, updatedTask: TaskType) => ({
+    type: 'UPDATE_TASK',
     todolistId,
     taskId,
-    changedTask
-} as const);
-export const changeTaskTitleAC = (todolistId: string, taskId: string, title: string) => ({
-    type: 'CHANGE-TASK-TITLE',
-    todolistId,
-    taskId,
-    title
+    updatedTask
 } as const);
 export const setTasksAC = (todolistId: string, tasks: Array<TaskType>) => ({
     type: 'SET_TASKS',
@@ -129,8 +114,9 @@ export const addTaskTC = (todolistId: string, newTaskTitle: string) => {
             })
     }
 }
-export const changeTaskStatusTC = (todolistId: string, taskId: string, newStatus: TaskStatuses) => {
+export const updateTaskTC = (todolistId: string, taskId: string, propertyUpdateTask: PropertyUpdateTaskType) => {
     return (dispatch: Dispatch<ActionsType>, getState: () => AppRootStateType) => {
+
         const taskToUpdate = getState().tasks[todolistId].find(task => task.id === taskId);
 
         if (taskToUpdate) {
@@ -140,13 +126,14 @@ export const changeTaskStatusTC = (todolistId: string, taskId: string, newStatus
                 priority: taskToUpdate.priority,
                 startDate: taskToUpdate.startDate,
                 title: taskToUpdate.title,
-                status: newStatus
+                status: taskToUpdate.status,
+                ...propertyUpdateTask
             };
 
             dispatch(setStatusAC('loading'))
             tasksAPI.updateTask(todolistId, taskId, updateTaskModel)
                 .then(response => {
-                    dispatch(changeTaskStatusAC(todolistId, taskId, response.data.data.item))
+                    dispatch(updateTaskAC(todolistId, taskId, response.data.data.item))
                     dispatch(setStatusAC('succeeded'))
                 })
         }

@@ -46,3 +46,12 @@ export enum RequestStatusCodes {
 }
 
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed'
+
+export type PropertyUpdateTaskType = {
+    title?: string
+    description?: string
+    status?: number
+    priority?: number
+    startDate?: string
+    deadline?: string
+}

@@ -1,6 +1,6 @@
 import {
     addTaskAC,
-    changeTaskStatusAC,
+    updateTaskAC,
     changeTaskTitleAC,
     deleteTaskAC, setTasksAC,
     tasksReducer,
@@ -114,7 +114,7 @@ test('status of correct task should be changed', () => {
         addedDate: ''
     }
 
-    const endState = tasksReducer(startState, changeTaskStatusAC('todolist1', '1', changedTask));
+    const endState = tasksReducer(startState, updateTaskAC('todolist1', '1', changedTask));
 
     expect(endState['todolist1'][0].status).toBe(TaskStatuses.Completed);
     expect(endState['todolist2'][0].status).toBe(TaskStatuses.New);
