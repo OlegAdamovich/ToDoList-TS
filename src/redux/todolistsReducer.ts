@@ -74,6 +74,10 @@ export const setTodolistsTC = () => {
                 dispatch(setTodolistsAC(response.data))
                 dispatch(setStatusAC('succeeded'))
             })
+            .catch(error => {
+                dispatch(setErrorAC(error.message))
+                dispatch(setStatusAC('failed'))
+            })
     }
 }
 export const deleteTodolistTC = (todolistId: string) => {
@@ -82,8 +86,21 @@ export const deleteTodolistTC = (todolistId: string) => {
         dispatch(changeTodolistEntityStatusAC(todolistId, 'loading'))
         todolistAPI.deleteTodolist(todolistId)
             .then(response => {
-                dispatch(deleteTodolistAC(todolistId))
-                dispatch(setStatusAC('succeeded'))
+                if (response.data.resultCode === RequestStatusCodes.success) {
+                    dispatch(deleteTodolistAC(todolistId))
+                    dispatch(setStatusAC('succeeded'))
+                } else {
+                    if (response.data.messages.length) {
+                        dispatch(setErrorAC(response.data.messages[0]))
+                    } else {
+                        dispatch(setErrorAC('Some error occurred'))
+                    }
+                    dispatch(setStatusAC('failed'))
+                }
+            })
+            .catch(error => {
+                dispatch(setErrorAC(error.message))
+                dispatch(setStatusAC('failed'))
             })
     }
 }
@@ -104,6 +121,10 @@ export const addTodolistTC = (todolistTitle: string) => {
                     dispatch(setStatusAC('failed'))
                 }
             })
+            .catch(error => {
+                dispatch(setErrorAC(error.message))
+                dispatch(setStatusAC('failed'))
+            })
     }
 }
 export const changeTodolistTitleTC = (todolistId: string, newTodolistTitle: string) => {
@@ -111,8 +132,22 @@ export const changeTodolistTitleTC = (todolistId: string, newTodolistTitle: stri
         dispatch(setStatusAC('loading'))
         todolistAPI.updateTodolist(todolistId, newTodolistTitle)
             .then(response => {
-                dispatch(changeTodolistTitleAC(todolistId, newTodolistTitle))
-                dispatch(setStatusAC('succeeded'))
+                debugger
+                if (response.data.resultCode === RequestStatusCodes.success) {
+                    dispatch(changeTodolistTitleAC(todolistId, newTodolistTitle))
+                    dispatch(setStatusAC('succeeded'))
+                } else {
+                    if (response.data.messages.length) {
+                        dispatch(setErrorAC(response.data.messages[0]))
+                    } else {
+                        dispatch(setErrorAC('Some error occurred'))
+                    }
+                    dispatch(setStatusAC('failed'))
+                }
+            })
+            .catch(error => {
+                dispatch(setErrorAC(error.message))
+                dispatch(setStatusAC('failed'))
             })
     }
 }

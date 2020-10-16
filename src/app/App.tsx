@@ -29,7 +29,7 @@ export const App = () => {
                     <Button color="inherit">Login</Button>
                 </Toolbar>
             </AppBar>
-            {loadingStatus === 'loading' && <LinearProgress color="secondary"/>}
+            <div style={{minHeight: '10px'}}>{loadingStatus === 'loading' && <LinearProgress color={'secondary'}/>}</div>
             <Container>
                 <Switch>
                     <Route exact path='/' render={() => <Todolists/>}/>

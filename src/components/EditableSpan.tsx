@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from "react";
 import {TextField} from "@material-ui/core";
+import {RequestStatusType} from '../entities';
 
 type PropsType = {
     title: string

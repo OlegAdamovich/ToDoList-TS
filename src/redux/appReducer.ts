@@ -1,8 +1,13 @@
 import {RequestStatusType} from '../entities';
 
-const initialState = {
-    status: 'loading' as RequestStatusType,
-    error: null as string | null
+type InitialStateType = {
+    status: RequestStatusType
+    error: string | null
+}
+
+const initialState: InitialStateType = {
+    status: 'idle',
+    error: null
 }
 
 export const appReducer = (state: InitialStateType = initialState, action: ActionsType): InitialStateType => {
@@ -21,6 +26,6 @@ export const setStatusAC = (status: RequestStatusType) => ({type: 'APP/SET_STATU
 export const setErrorAC = (error: string | null) => ({type: 'APP/SET_ERROR', error} as const);
 
 // Types
-type InitialStateType = typeof initialState
+// type InitialStateType = typeof initialState
 
 type ActionsType = ReturnType<typeof setStatusAC> | ReturnType<typeof setErrorAC>

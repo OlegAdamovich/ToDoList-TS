@@ -79,6 +79,10 @@ export const setTasksTC = (todolistId: string) => {
                 dispatch(setTasksAC(todolistId, response.data.items))
                 dispatch(setStatusAC('succeeded'))
             })
+            .catch(error => {
+                dispatch(setErrorAC(error.message))
+                dispatch(setStatusAC('failed'))
+            })
     }
 }
 export const deleteTaskTC = (todolistId: string, taskId: string) => {
@@ -86,8 +90,21 @@ export const deleteTaskTC = (todolistId: string, taskId: string) => {
         dispatch(setStatusAC('loading'))
         tasksAPI.deleteTask(todolistId, taskId)
             .then(response => {
-                dispatch(deleteTaskAC(todolistId, taskId))
-                dispatch(setStatusAC('succeeded'))
+                if (response.data.resultCode === RequestStatusCodes.success) {
+                    dispatch(deleteTaskAC(todolistId, taskId))
+                    dispatch(setStatusAC('succeeded'))
+                } else {
+                    if (response.data.messages.length) {
+                        dispatch(setErrorAC(response.data.messages[0]))
+                    } else {
+                        dispatch(setErrorAC('Some error occurred'))
+                    }
+                    dispatch(setStatusAC('failed'))
+                }
+            })
+            .catch(error => {
+                dispatch(setErrorAC(error.message))
+                dispatch(setStatusAC('failed'))
             })
     }
 }
@@ -133,8 +150,21 @@ export const updateTaskTC = (todolistId: string, taskId: string, propertyUpdateT
             dispatch(setStatusAC('loading'))
             tasksAPI.updateTask(todolistId, taskId, updateTaskModel)
                 .then(response => {
-                    dispatch(updateTaskAC(todolistId, taskId, response.data.data.item))
-                    dispatch(setStatusAC('succeeded'))
+                    if (response.data.resultCode === RequestStatusCodes.success) {
+                        dispatch(updateTaskAC(todolistId, taskId, response.data.data.item))
+                        dispatch(setStatusAC('succeeded'))
+                    } else {
+                        if (response.data.messages.length) {
+                            dispatch(setErrorAC(response.data.messages[0]))
+                        } else {
+                            dispatch(setErrorAC('Some error occurred'))
+                        }
+                        dispatch(setStatusAC('failed'))
+                    }
+                })
+                .catch(error => {
+                    dispatch(setErrorAC(error.message))
+                    dispatch(setStatusAC('failed'))
                 })
         }
     }
